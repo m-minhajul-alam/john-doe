@@ -1,58 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import fetchData from "../hooks/useFetchData/useFetchData";
-// import Banner from "../components/Home/Banner/Banner";
-// import About from "./about/page";
-// import Services from "./services/page";
-// import Skills from "./skills/page";
-// import Projects from "./projects/page";
-// import Timeline from "./timeline/page";
-// import Testimonial from "./testimonial/page";
-// import Contact from "./contact/page";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import fetchData from "@/hooks/useFetchData/useFetchData";
 
-const Home = () => {
+const Homepage = () => {
   const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        setLoading(true);
         const response = await fetchData();
         setUserData(response.user);
-        setSuccess(response.success);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoading(false);
       }
     };
     getData();
   }, []);
 
   return (
-    <div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : success ? (
-        <>
-        <h1>home</h1>
-          {/* <Banner user={userData} />
-          <About about={userData?.about} />
-          <Services services={userData?.services} />
-          <Skills skills={userData?.skills} />
-          <Projects projects={userData?.projects} />
-          <Timeline timeline={userData?.timeline} />
-          <Testimonial testimonials={userData?.testimonials} />
-          <Contact user={userData} /> */}
-        </>
-      ) : (
-        <p>Error: Data retrieval unsuccessful</p>
-      )}
-    </div>
+    <motion.div
+      className="h-fit"
+      initial={{ y: "-200vh" }}
+      animate={{ y: "0%" }}
+      transition={{ duration: 1 }}
+    >
+      <div className="h-full overflow-scroll">
+        <div className="min-h-screen max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-5 space-y-5 p-5">
+          <div>
+            <Image
+              src={userData?.about?.avatar?.url}
+              alt=""
+              height={100}
+              width={100}
+              className="w-96 h-56 lg:h-96 rounded-full object-cover"
+            />
+          </div>
+          <div>
+            <h1 className="text-4xl md:text-6xl font-bold">
+              {userData?.about?.quote}
+            </h1>
+            <p className="md:text-xl text-end">- {userData?.about?.name}</p>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
-export default Home;
+export default Homepage;
